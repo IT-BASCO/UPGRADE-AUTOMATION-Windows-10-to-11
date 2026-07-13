@@ -211,8 +211,8 @@ The system automatically writes a summary status to the central repository file 
 [2026-07-07 10:46:17] [WIN10-FREE2-84] [V12.8] [SUMMARY] Final Status -> EC: OK, OM: OK, SYM: OK, NS: OK
 
 **Status Key:**
-* **EC:** Environment Check (Disk Optimization & Registry Safeguard)
-* **OM:** Operating System Migration (Windows 11 Upgrade)
+* **EC:** Endpoint Centeral
+* **OM:** Opmanager
 * **SYM:** Symantec Endpoint Protection Agent
 * **NS:** NetSupport Client
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

@@ -245,6 +245,8 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 
 * **Mohammad Absalan** | [linkedin](https://linkedin.com/in/mohammad-absalan) | `absalan95mohammad@gmail.com`
 
+* **Afsaneh SHarafi** | [linkedin](https://linkedin.com/in/afsaneh-sharafi) | `afsanehsharafi00@gmail.com`
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->

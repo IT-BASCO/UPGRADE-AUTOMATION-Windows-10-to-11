@@ -3,15 +3,20 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/IT-BASCO/UPGRADE-AUTOMATION-Windows-10-to-11">
-    <img src="images/logo.png" alt="Logo" width="380" height="280">
+  <a href="[https://github.com/IT-BASCO/UPGRADE-AUTOMATION-Windows-10-to-11](https://github.com/IT-BASCO/UPGRADE-AUTOMATION-Windows-10-to-11)">
+    <img src="images/logo.png" alt="Logo" width="980" height="880">
   </a>
 
-  <h3 align="center">UPGRADE-AUTOMATION-Windows-10-to-11 </h3>
+  <h3 align="center">UPGRADE-AUTOMATION-Windows-10-to-11</h3>
 
-  <p align="center">
-    An awesome README template to jumpstart your projects!
+  <p align="left">
+    <strong>⚡ Enterprise Infrastructure Automation:</strong> A zero-touch deployment framework designed to orchestrate and automate seamless, remote in-place migrations from Windows 10 to Windows 11 via Active Directory GPOs.
     <br />
+    <br />
+    <strong>⚙️ The 5-Script Pipeline:</strong> Dynamically handles proactive local disk optimization, extracts and strips installation telemetry to safely bypass rigid TPM 2.0/CPU hardware blocks, and silently reinstalls core endpoint management agents with zero user disruption.
+    <br />
+  </p>
+  <p align="center">
     <a href="https://github.com/IT-BASCO/UPGRADE-AUTOMATION-Windows-10-to-11"><strong>Explore the docs »</strong></a>
     <br />
     <br />
@@ -23,8 +28,6 @@
   </p>
 </div>
 
-
-
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
@@ -32,34 +35,23 @@
 * [🚀 Getting Started](#getting-started)
     * [Prerequisites](#prerequisites)
     * [Configuration & Deployment](#configuration--deployment)
-
+    * [ISO Media & Telemetry Bypass Preparation](#iso-media--telemetry-bypass-preparation)
 * [⚙️ Framework Pipeline Stages](#framework-pipeline-stages)
-
     * [Stage 1: Disk Space Optimization](#stage-1-disk-space-optimization)
-	
     * [Stage 2: Registry Safeguard](#stage-2-registry-safeguard)
-	
     * [Stage 3: In-Place Migration Engine](#stage-3-in-place-migration-engine)
-	
     * [Stage 4: Post-Deployment Agent Healing](#stage-4-post-deployment-agent-healing)
-    
     * [Stage 5: Post-Upgrade Storage Reclaimer](#stage-5-post-upgrade-storage-reclaimer)
-	
-
 * [🛡️ Security & Compliance](#security--compliance)
 * [💻 Usage](#usage)
-* [🗺️ Roadmap](#roadmap)
 * [🤝 Contributing](#contributing)
 * [📜 License](#license)
 * [📧 Contact](#contact)
 * [✨ Acknowledgments](#acknowledgments)
 
-
 <!-- ABOUT THE PROJECT -->
 <a name="about-the-project"></a>
 # 🏢 About The Project
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 
 Following the End-of-Life (EOL) announcement for Windows 10, large enterprises face critical security and compliance risks. Manually upgrading a decentralized fleet of endpoints introduces staggering operational bottlenecks. 
 
@@ -78,20 +70,25 @@ This project shifts infrastructure operations from traditional, high-risk manual
 * [![PowerShell][PowerShell-shield]][PowerShell-url]
 * [![Windows][Windows-shield]][Windows-url]
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
 <!-- GETTING STARTED -->
-<a name="getting-started"><a/>
+<a name="getting-started"></a>
 # 🚀 Getting Started
+
+> **⚠️ WARNING: Use at Your Own Risk**
+> This framework performs deep-level modifications to the Windows registry and OS installation parameters. It is intended for authorized IT administrators only. 
+> * **Always test in a non-production, isolated sandbox environment first.**
+> * **Ensure a verified full-system backup exists before deployment.**
+> * The authors assume no liability for data loss or system instability.
 
 <a name="prerequisites"></a>
 ### 📋 Prerequisites
 
-* Target clients must be running Windows 10 Pro / Enterprise / LTSC.
-* Administrative privileges on the target endpoints (via GPO or Endpoint Management tool).
-* A centralized network file share containing the Windows 11 ISO installation media and software payloads.
+* **Backup:** Create a full-system backup or snapshot before executing the pipeline.
+* **Permissions:** Administrative privileges (SYSTEM or Local Admin account).
+* **Network:** Stable connectivity to the central File Share containing the ISO and Agent payloads.
+* **Target:** Windows 10 (Pro/Enterprise/LTSC) systems.
 
 <a name="configuration--deployment"></a>
 ### 🛠️ Configuration & Deployment
@@ -110,6 +107,29 @@ This project shifts infrastructure operations from traditional, high-risk manual
    )
    ```
 
+<a name="iso-media--telemetry-bypass-preparation"></a>
+### 📀 ISO Media & Telemetry Bypass Preparation (Mandatory Pre-requisites)
+
+Before executing the upgrade pipeline on target network endpoints, you must extract the Windows 11 25H2 installation media to your centralized network share and forcefully neutralize Microsoft's mandatory hardware restrictions:
+
+1. **Extract the Windows 11 25H2 ISO Image:** Use command-line 7-Zip (`7z`) to extract the official operating system image directly into your designated network update share directory:
+   ```cmd
+   7z x "\\Corp-Share\ISOs\Win11_25H2.iso" -o"G:\update\win11up25h2" -y
+   ```
+
+2. **Neutralize and Bypass Hardware Assessment Telemetry:** Navigate to the extracted `sources` folder, rename the native telemetry assessment library to create a backup, and replace it with a blank, 0-byte dummy file. This forcefully strips the installation engine of its ability to enforce hardware checks mid-execution:
+   ```cmd
+   cd G:\update\win11up25h2\sources
+   ren appraiserres.dll appraiserres.dll.bak
+   echo. > appraiserres.dll
+   ```
+
+3. **Inject Hardware Verification Bypass Keys:** The migration pipeline applies strategic registry spoofing values to ensure the OS installation engine registers full environment compliance across legacy architectures:
+   ```batch
+   reg add "HKLM\SYSTEM\Setup\MoSetup" /v AllowUpgradesWithUnsupportedTPMOrCPU /t REG_DWORD /d 1 /f
+   reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\HwReqChk" /v HwReqChkVars /t REG_MULTI_SZ /s , /d "SQ_SecureBootCapable=TRUE,SQ_SecureBootEnabled=TRUE,SQ_TpmVersion=2,SQ_RamMB=8192," /f
+   ```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
@@ -120,7 +140,7 @@ This project shifts infrastructure operations from traditional, high-risk manual
 
 The architecture consists of 5 sequential execution stages located in the `src/` folder:
 
-```
+```text
 [Target Endpoint]
        │
        ├──► Stage 1: 01-Disk-Optimizer.ps1       (Reclaims capacity, analyzes profiles)
@@ -129,6 +149,7 @@ The architecture consists of 5 sequential execution stages located in the `src/`
        ├──► Stage 4: 04-Agent-Healing.ps1         (Zero-GUI, asynchronous security agent injection)
        └──► Stage 5: 05-Post-Upgrade-Cleanup.bat  (Deep purge of Windows.old & setup caches)
 ```
+
 <a name="stage-1-disk-space-optimization"></a>
 ### 🦾 Stage 1: Disk Space Optimization (`01-Disk-Optimizer.ps1`)
 * **Purpose:** Proactively prepares the local primary volume for the heavy upgrade footprint.
@@ -144,7 +165,8 @@ The architecture consists of 5 sequential execution stages located in the `src/`
 * **Purpose:** The central core that performs the unattended upgrade payload injection.
 * **Mechanics:**
   * Instantly blocks deployment on critical Windows Servers to prevent domain controller or infrastructure corruption.
-  * Bypasses Windows 11 TPM 2.0, RAM, and CPU checks via registry-level hardware spoofing.
+  * Leverages extracted ISO media and completely disarms the Microsoft hardware assessment telemetry layer by stripping and zero-byte spoofing `appraiserres.dll`.[cite: 1]
+  * Circumvents rigid Windows 11 TPM 2.0, Secure Boot, and CPU generation blocks via proactive `MoSetup` and `HwReqChk` registry spoofing injections.[cite: 1]
   * Dynamically detects **Windows 10 LTSC** versions and temporarily morphs their identity parameters to standard Enterprise, preventing the classic upgrade blockade.
   * Flushes legacy licensing keys and reinjects standard Enterprise GVLKs aligned with central KMS activation servers.
 
@@ -169,48 +191,42 @@ The architecture consists of 5 sequential execution stages located in the `src/`
 <!-- Security & Compliance-->
 <a name="security--compliance"></a>
 # 🛡️ Security & Compliance
-- **Permissions:** Requires **Administrator** privileges to modify registry keys.
-- **Transparency:** This tool creates local logs in `C:\Logs`. No data is transmitted to external servers.
-
+* **Privilege Requirements:** The framework executes with local Administrator privileges strictly to perform authorized system modifications.
+* **Integrity & Transparency:** All scripts are open-source and human-readable. No obfuscated binaries or hidden payloads are executed, ensuring full auditability of the migration process.
+* **Data Privacy:** This tool operates entirely within your network perimeter. **Zero telemetry, system metadata, or user data is transmitted to external servers.**
+* **Auditability:** Every execution step is timestamped and logged locally in `C:\Logs`. These logs are designed to be ingested by centralized log management solutions for enterprise-wide compliance tracking.
+* **Non-Persistent:** The framework does not introduce permanent backdoors; it only deploys the essential management agents required for endpoint health.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
 <a name="usage"></a>
 # 💻 Usage
+This framework is designed for sequential execution. You can orchestrate the deployment using Active Directory Group Policy Objects (GPOs), System Startup Scripts, or your centralized Endpoint Management software (e.g., ManageEngine, SCCM, PDQ).
 
-You can orchestrate the execution sequence sequentially using **Active Directory Group Policy Objects (GPOs)**, **System Startup/Shutdown Scripts**, or your centralized endpoint management tool targeted directly at client operating systems.
+### Monitoring & Log Analysis
+The system automatically writes a summary status to the central repository file share.
 
-For automated logging monitoring, check the central repository file share configured in Stage 4 to trace real-time execution summaries across all 170 nodes:
-```text
+**Log Format Example:**
 [2026-07-07 10:46:17] [WIN10-FREE2-84] [V12.8] [SUMMARY] Final Status -> EC: OK, OM: OK, SYM: OK, NS: OK
-```
 
+**Status Key:**
+* **EC:** Environment Check (Disk Optimization & Registry Safeguard)
+* **OM:** Operating System Migration (Windows 11 Upgrade)
+* **SYM:** Symantec Endpoint Protection Agent
+* **NS:** NetSupport Client
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ROADMAP -->
 <a name="roadmap"></a>
-# 🗺️ Roadmap
-
-See the [open issues](https://github.com/IT-BASCO/UPGRADE-AUTOMATION-Windows-10-to-11/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- CONTRIBUTING -->
 <a name="contributing"></a>
 # 🤝 Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-For details on how to contribute, please see our [CONTRIBUTING.md](CONTRIBUTING.md) file.
+Contributions are greatly appreciated. Please see our [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- LICENSE -->
 <a name="license"></a>
@@ -218,8 +234,6 @@ For details on how to contribute, please see our [CONTRIBUTING.md](CONTRIBUTING.
 Distributed under the **MIT License**. See `LICENSE` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- CONTACT -->
 <a name="contact"></a>
@@ -229,30 +243,22 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 
 * **Vahid Soltaninejad** | [linkedin](https://linkedin.com/in/vahid-soltani-nejad) | `vsntxt@gmail.com`
 
-* **Mohammad Absalan**  | [linkedin](https://linkedin.com/in/mohammad-absalan) | `absalan95mohammad@gmail.com`
-
+* **Mohammad Absalan** | [linkedin](https://linkedin.com/in/mohammad-absalan) | `absalan95mohammad@gmail.com`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ACKNOWLEDGMENTS -->
 <a name="acknowledgments"></a>
 # ✨ Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
+* Dedicated to the open-source community, whose shared knowledge in automation and system administration makes enterprise operations more efficient.
+* Thanks to all the contributors and colleagues who helped validate and refine the scripts within this repository.
 
-* [Choose an Open Source License](https://choosealicense.com)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[product-screenshot]: images/screenshot.png
 [PowerShell-shield]: https://img.shields.io/badge/PowerShell-%235391FE.svg?style=plastic&logo=powershell&logoColor=white
 [PowerShell-url]: https://learn.microsoft.com/en-us/powershell/
 [Windows-shield]: https://img.shields.io/badge/Windows-0078D6?style=plastic&logo=windows&logoColor=white
 [Windows-url]: https://www.microsoft.com/windows
-
